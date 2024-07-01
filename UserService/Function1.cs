@@ -8,16 +8,20 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Shared;
+using UserService.Helpers;
+using Microsoft.Extensions.Options;
 
 namespace UserService
 {
     public class Function1
     {
         private readonly IExampleService exampleService;
+        private readonly Settings settings;
 
-        public Function1(IExampleService exampleService)
+        public Function1(IExampleService exampleService, IOptions<Settings> settings)
         {
             this.exampleService = exampleService;
+            this.settings = settings.Value;
         }
 
         [FunctionName("Function1")]
@@ -37,7 +41,7 @@ namespace UserService
 
             string responseMessage = string.IsNullOrEmpty(name)
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name} (result={result}). This HTTP triggered function executed successfully.";
+                : $"Hello, {name} (result={result}, setting={this.settings.ExampleSetting}). This HTTP triggered function executed successfully.";
 
             return new OkObjectResult(responseMessage);
         }
