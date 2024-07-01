@@ -7,13 +7,21 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Shared;
 
 namespace UserService
 {
-    public static class Function1
+    public class Function1
     {
+        private readonly IExampleService exampleService;
+
+        public Function1(IExampleService exampleService)
+        {
+            this.exampleService = exampleService;
+        }
+
         [FunctionName("Function1")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
@@ -25,9 +33,11 @@ namespace UserService
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             name = name ?? data?.name;
 
+            var result = this.exampleService.Execute();
+
             string responseMessage = string.IsNullOrEmpty(name)
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+                : $"Hello, {name} (result={result}). This HTTP triggered function executed successfully.";
 
             return new OkObjectResult(responseMessage);
         }
