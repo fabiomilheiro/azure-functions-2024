@@ -12,15 +12,15 @@ public class AppSettings
 
     public string JwtAudience { get; set; }
 
-    //public string SqlConnectionString { get; set; }
+    public string SqlConnectionString { get; set; }
 
-    //public string ServiceBusConnectionString { get; set; }
+    public string ServiceBusConnectionString { get; set; }
 
     public string ServiceBusQueueName { get; set; }
 
-    //public string BunnyStorageApiKey { get; set; }
+    public string BunnyStorageApiKey { get; set; }
 
-    //public string BunnyStorageApiBaseUrl { get; set; }
+    public string BunnyStorageApiBaseUrl { get; set; }
 
-    //public bool EnableSensitiveDataLogging { get; set; }
+    public bool EnableSensitiveDataLogging { get; set; }
 }

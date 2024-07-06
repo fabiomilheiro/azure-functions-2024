@@ -1,11 +1,11 @@
 ﻿using Azf.Shared;
 using Azf.Shared.Configuration;
 using Azf.UserService;
+using Azf.UserService.Helpers;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
-using UserService.Helpers;
 
 [assembly: FunctionsStartup(typeof(Startup))]
 namespace Azf.UserService

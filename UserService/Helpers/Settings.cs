@@ -1,4 +1,4 @@
-﻿namespace UserService.Helpers
+﻿namespace Azf.UserService.Helpers
 {
     public class Settings
     {

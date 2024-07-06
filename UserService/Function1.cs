@@ -6,9 +6,9 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using UserService.Helpers;
 using Microsoft.Extensions.Options;
 using Azf.Shared;
+using Azf.UserService.Helpers;
 
 namespace Azf.UserService
 {
