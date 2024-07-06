@@ -7,11 +7,11 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Shared;
 using UserService.Helpers;
 using Microsoft.Extensions.Options;
+using Azf.Shared;
 
-namespace UserService
+namespace Azf.UserService
 {
     public class Function1
     {
@@ -37,11 +37,11 @@ namespace UserService
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             name = name ?? data?.name;
 
-            var result = this.exampleService.Execute();
+            var result = exampleService.Execute();
 
             string responseMessage = string.IsNullOrEmpty(name)
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name} (result={result}, setting={this.settings.ExampleSetting}). This HTTP triggered function executed successfully.";
+                : $"Hello, {name} (result={result}, setting={settings.ExampleSetting}). This HTTP triggered function executed successfully.";
 
             return new OkObjectResult(responseMessage);
         }

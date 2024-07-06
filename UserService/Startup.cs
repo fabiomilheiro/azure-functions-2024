@@ -1,17 +1,13 @@
-﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+﻿using Azf.Shared;
+using Azf.UserService;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Shared;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UserService.Helpers;
 
-[assembly: FunctionsStartup(typeof(UserService.Startup))]
-namespace UserService
+[assembly: FunctionsStartup(typeof(Startup))]
+namespace Azf.UserService
 {
     public class Startup : FunctionsStartup
     {
