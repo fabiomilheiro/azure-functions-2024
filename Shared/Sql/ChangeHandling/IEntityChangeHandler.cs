@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Backend.App.Data.Sql.ChangeHandling
+namespace Azf.Shared.Sql.ChangeHandling
 {
     public interface IEntityChangeHandler
     {

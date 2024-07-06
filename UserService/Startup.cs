@@ -1,4 +1,5 @@
 ﻿using Azf.Shared;
+using Azf.Shared.Configuration;
 using Azf.UserService;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +16,12 @@ namespace Azf.UserService
         {
             var context = builder.GetContext();
 
-            builder.ConfigurationBuilder
-                .AddJsonFile(Path.Combine(context.ApplicationRootPath, "settings.json"))
-                .AddJsonFile(Path.Combine(context.ApplicationRootPath, $"settings.{context.EnvironmentName}.json"));
+            builder.ConfigurationBuilder.AddConfigurations(
+                new AddConfigurationsRequest
+                {
+                    ApplicationRootPath = context.ApplicationRootPath,
+                    EnvironmentName = context.EnvironmentName,
+                });
         }
 
         public override void Configure(IFunctionsHostBuilder builder)

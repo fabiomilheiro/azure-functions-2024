@@ -1,5 +1,4 @@
-﻿using Backend.App.Data.Sql.ChangeHandling;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Azf.Shared.Sql.ChangeHandling;
 

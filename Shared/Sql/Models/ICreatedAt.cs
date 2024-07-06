@@ -1,4 +1,4 @@
-﻿namespace Shared.Sql.Models
+﻿namespace Azf.Shared.Sql.Models
 {
     public interface ICreatedAt
     {

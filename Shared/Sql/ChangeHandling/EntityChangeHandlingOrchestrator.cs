@@ -1,18 +1,13 @@
-﻿using Azf.Shared.Types;
-using Backend.App.Data.Sql.ChangeHandling;
+﻿using Azf.Shared.Sql;
+using Azf.Shared.Types;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Shared.Sql.ChangeHandling;
+namespace Azf.Shared.Sql.ChangeHandling;
 
 public interface IEntityChangeHandlingOrchestrator
 {
-    void Handle(ServiceDbContext db);
+    void Handle(SqlDbContext db);
 }
 
 public class EntityChangeHandlingOrchestrator : IEntityChangeHandlingOrchestrator
@@ -40,11 +35,11 @@ public class EntityChangeHandlingOrchestrator : IEntityChangeHandlingOrchestrato
         this.serviceProvider = serviceProvider;
     }
 
-    public void Handle(ServiceDbContext db)
+    public void Handle(SqlDbContext db)
     {
         var entries = db.ChangeTracker.Entries().ToArray();
 
-        var entityChangeHandlers = this.GetEntityChangeHandlersByEntries(entries);
+        var entityChangeHandlers = GetEntityChangeHandlersByEntries(entries);
 
         foreach (var entityChangeHandler in entityChangeHandlers)
         {
@@ -84,7 +79,7 @@ public class EntityChangeHandlingOrchestrator : IEntityChangeHandlingOrchestrato
         var entityChangeHandlerTypes = GetEntityChangeHandlerTypesByEntries(entries);
 
         return entityChangeHandlerTypes
-               .Select(type => (IEntityChangeHandler)this.serviceProvider.GetRequiredService(type))
+               .Select(type => (IEntityChangeHandler)serviceProvider.GetRequiredService(type))
                .ToArray();
     }
 

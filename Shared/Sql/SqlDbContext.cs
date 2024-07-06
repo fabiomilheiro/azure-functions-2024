@@ -1,23 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azf.Shared.Sql.ChangeHandling;
+using Azf.Shared.Sql.Outbox;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Shared.Sql.ChangeHandling;
-using Shared.Sql.Models;
-using System;
 
-namespace Shared.Sql
+namespace Azf.Shared.Sql
 {
-    public class ServiceDbContext : DbContext
+    public class SqlDbContext : DbContext
     {
-        private readonly DbContextOptions<ServiceDbContext> options;
+        private readonly DbContextOptions<SqlDbContext> options;
         private readonly IEntityChangeHandlingOrchestrator entityChangeHandlingOrchestrator;
-        private readonly ILogger<ServiceDbContext> logger;
+        private readonly ILogger<SqlDbContext> logger;
 
-        public ServiceDbContext(
-            DbContextOptions<ServiceDbContext> options,
+        public SqlDbContext(
+            DbContextOptions<SqlDbContext> options,
         IEntityChangeHandlingOrchestrator entityChangeHandlingOrchestrator,
         //IOnModelCreatingOrchestrator onModelCreatingOrchestrator,
         //IQueueClient queueClient,
-        ILogger<ServiceDbContext> logger)
+        ILogger<SqlDbContext> logger)
         : base(options)
         {
             this.options = options;
@@ -36,9 +35,9 @@ namespace Shared.Sql
                 return await base.SaveChangesAsync(request.CancellationToken);
             }
 
-            var onSaveChangesResult = this.OnSaveChanges();
+            var onSaveChangesResult = OnSaveChanges();
             var result = await base.SaveChangesAsync(request.CancellationToken);
-            await this.OnChangesSaved(onSaveChangesResult);
+            await OnChangesSaved(onSaveChangesResult);
             return result;
         }
 
@@ -50,7 +49,7 @@ namespace Shared.Sql
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
         {
-            return this.SaveChangesAsync(new SaveChangesRequest
+            return SaveChangesAsync(new SaveChangesRequest
             {
                 SkipChangeHandling = false,
                 CancellationToken = cancellationToken,
@@ -73,11 +72,12 @@ namespace Shared.Sql
             {
                 try
                 {
+                    await Task.Delay(0);
                     //await this.queueClient.SendAsync(new RelayOutboxMessagesAsyncMessage());
                 }
                 catch (Exception e)
                 {
-                    this.logger.LogWarning(e, "Could not send relay outbox message to queue.");
+                    logger.LogWarning(e, "Could not send relay outbox message to queue.");
                 }
             }
         }
