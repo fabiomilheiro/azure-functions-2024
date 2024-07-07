@@ -25,7 +25,7 @@ public abstract class DesignTimeSqlDbContextFactory<TDbContext> : IDesignTimeDbC
                 {
                     { "Environment", AppEnvironment.Development.ToString() },
                 })
-            .Build()
+            .Build();
 
         var serviceProvider = new ServiceCollection()
                               .AddSingleton<IConfiguration>(configuration)

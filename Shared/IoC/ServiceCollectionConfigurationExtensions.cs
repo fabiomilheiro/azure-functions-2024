@@ -26,10 +26,6 @@ public static class ServiceCollectionConfigurationExtensions
 
             configuration.Bind(settings);
 
-            var j = new JsonService(JsonSerializerOptionsFactory.GetDefault(settings));
-
-            //Console.WriteLine("settings", j.Serialize(settings));
-            Console.WriteLine("configuration:", j.Serialize(configuration));
             ArgumentException.ThrowIfNullOrWhiteSpace(
                 settings.SqlConnectionString,
                 nameof(SharedSettings.SqlConnectionString));
