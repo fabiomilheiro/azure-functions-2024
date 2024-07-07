@@ -1,17 +1,16 @@
-﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+﻿using Azf.Shared;
+using Azf.Shared.Configuration;
+using Azf.Shared.IoC;
+using Azf.UserService;
+using Azf.UserService.Helpers;
+using Azf.UserService.Sql;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Shared;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UserService.Helpers;
+using Microsoft.Extensions.Options;
 
-[assembly: FunctionsStartup(typeof(UserService.Startup))]
-namespace UserService
+[assembly: FunctionsStartup(typeof(Startup))]
+namespace Azf.UserService
 {
     public class Startup : FunctionsStartup
     {
@@ -19,17 +18,28 @@ namespace UserService
         {
             var context = builder.GetContext();
 
-            builder.ConfigurationBuilder
-                .AddJsonFile(Path.Combine(context.ApplicationRootPath, "settings.json"))
-                .AddJsonFile(Path.Combine(context.ApplicationRootPath, $"settings.{context.EnvironmentName}.json"));
+            builder.ConfigurationBuilder.AddConfigurations(
+                new AddConfigurationsRequest
+                {
+                    ApplicationRootPath = context.ApplicationRootPath,
+                    EnvironmentName = context.EnvironmentName,
+                });
         }
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
+            builder.Services.AddCommonServices();
+            
+            builder.Services.AddSqlDbContext<UserSqlDbContext>();
+
             builder.Services.AddSingleton<IExampleService, DefaultExampleService>();
-            builder.Services.AddOptions<Settings>().Configure<IConfiguration>((settings, configuration) =>
+            builder.Services.AddOptions<UserServiceSettings>().Configure<IConfiguration>((settings, configuration) =>
             {
                 configuration.Bind(settings);
+            });
+            builder.Services.AddTransient((serviceProvider) =>
+            {
+                return serviceProvider.GetService<IOptions<UserServiceSettings>>().Value;
             });
         }
     }

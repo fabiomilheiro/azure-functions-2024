@@ -1,4 +1,4 @@
-﻿namespace Shared
+﻿namespace Azf.Shared
 {
     public class DefaultExampleService : IExampleService
     {
