@@ -13,21 +13,22 @@ public abstract class DesignTimeSqlDbContextFactory<TDbContext> : IDesignTimeDbC
     {
         var configuration = new ConfigurationBuilder()
             .AddConfigurations(
-            new AddConfigurationsRequest
-            {
-                ApplicationRootPath = "",
-                EnvironmentName = AppEnvironment.Development.ToString(),
-            })
-                            .AddInMemoryCollection(
-                                new Dictionary<string, string?>
-                                {
-                                    { "ASPNETCORE_ENVIRONMENT", AppEnvironment.Development.ToString() },
-                                })
-                            .Build();
+                new AddConfigurationsRequest
+                {
+                    ApplicationRootPath = "",
+                    EnvironmentName = AppEnvironment.Development.ToString(),
+                })
+            .AddInMemoryCollection(
+                new Dictionary<string, string?>
+                {
+                    { "ASPNETCORE_ENVIRONMENT", AppEnvironment.Development.ToString() },
+                })
+            .Build();
 
         var serviceProvider = new ServiceCollection()
                               .AddCommonServices()
                               .AddSingleton<IConfiguration>(configuration)
+                              .AddSqlDbContext<TDbContext>()
                               .BuildServiceProvider();
 
         return serviceProvider.GetRequiredService<TDbContext>();

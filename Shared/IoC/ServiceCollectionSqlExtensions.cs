@@ -6,14 +6,16 @@ using Azf.Shared.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
 
 namespace Azf.Shared.IoC;
 
 public static class ServiceCollectionSqlExtensions
 {
-    public static void AddSqlDbContext<TDbContext>(this IServiceCollection services)
+    public static IServiceCollection AddSqlDbContext<TDbContext>(this IServiceCollection services)
         where TDbContext : SqlDbContext
     {
+        services.AddScoped<SqlDbContextDependencies>();
         services.AddDbContext<TDbContext>((serviceProvider, builder) =>
         {
             var appSettings = serviceProvider.GetRequiredService<SharedSettings>();
@@ -32,6 +34,8 @@ public static class ServiceCollectionSqlExtensions
 
         AddOnModelCreatingServices(services);
         AddEntityChangeHandlingServices(services);
+
+        return services;
     }
 
     private static void AddOnModelCreatingServices(IServiceCollection services)

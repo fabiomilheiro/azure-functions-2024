@@ -9,14 +9,13 @@ using Microsoft.Extensions.Logging;
 namespace Azf.Shared.Sql
 {
     public class SqlDbContextDependencies(
-        DbContextOptions<SqlDbContext> options,
+        DbContextOptions options,
         IEntityChangeHandlingOrchestrator entityChangeHandlingOrchestrator,
         IOnModelCreatingOrchestrator onModelCreatingOrchestrator,
         IQueueClient queueClient,
-        IJsonService jsonService,
-        ILogger<SqlDbContext> logger)
+        IJsonService jsonService)
     {
-        public DbContextOptions<SqlDbContext> Options { get; private set; } = options;
+        public DbContextOptions Options { get; private set; } = options;
 
         public IEntityChangeHandlingOrchestrator EntityChangeHandlingOrchestrator { get; private set; } = entityChangeHandlingOrchestrator;
 
@@ -25,8 +24,6 @@ namespace Azf.Shared.Sql
         public IQueueClient QueueClient { get; private set; } = queueClient;
 
         public IJsonService JsonService { get; private set; } = jsonService;
-
-        public ILogger<SqlDbContext> Logger { get; private set; } = logger;
     }
 
     public abstract class SqlDbContext : DbContext

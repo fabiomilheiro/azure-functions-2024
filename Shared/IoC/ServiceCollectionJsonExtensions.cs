@@ -7,12 +7,14 @@ namespace Azf.Shared.IoC;
 
 public static class ServiceCollectionJsonExtensions
 {
-    public static void AddJson(this IServiceCollection services)
+    public static IServiceCollection AddJson(this IServiceCollection services)
     {
         services.AddSingleton<IJsonService, JsonService>();
         services.AddSingleton(
             serviceProvider => JsonSerializerOptionsFactory.GetDefault(
                 serviceProvider.GetRequiredService<SharedSettings>()
             ));
+
+        return services;
     }
 }

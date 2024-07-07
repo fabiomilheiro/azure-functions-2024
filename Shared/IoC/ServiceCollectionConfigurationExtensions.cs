@@ -8,7 +8,7 @@ namespace Azf.Shared.IoC;
 
 public static class ServiceCollectionConfigurationExtensions
 {
-    public static void AddConfiguration(this IServiceCollection services)
+    public static IServiceCollection AddConfiguration(this IServiceCollection services)
     {
         services.AddOptions<SharedSettings>().Configure<IConfiguration>((settings, configuration) =>
         {
@@ -48,5 +48,7 @@ public static class ServiceCollectionConfigurationExtensions
             serviceProvider.GetRequiredService<IOptions<SharedSettings>>().Value);
 
         services.AddSingleton<IClock, Clock>();
+
+        return services;
     }
 }

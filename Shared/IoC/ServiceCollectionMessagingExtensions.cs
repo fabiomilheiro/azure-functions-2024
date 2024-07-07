@@ -8,7 +8,7 @@ namespace Azf.Shared.IoC;
 
 public static class ServiceCollectionMessagingExtensions
 {
-    public static void AddMessaging(this IServiceCollection services)
+    public static IServiceCollection AddMessaging(this IServiceCollection services)
     {
         services.AddScoped<IMessageHandlingOrchestrator, MessageHandlingOrchestrator>();
         services.AddScoped<IAsyncMessageHandlerFactory, AsyncMessageHandlerFactory>();
@@ -26,5 +26,7 @@ public static class ServiceCollectionMessagingExtensions
 
         services.AddScoped<IQueueClient, QueueClient>();
         services.AddScoped<IOutboxRelayer, OutboxRelayer>();
+
+        return services;
     }
 }
