@@ -1,5 +1,7 @@
 using Azf.Shared;
+using Azf.Shared.Sql.Outbox;
 using Azf.UserService.Helpers;
+using Azf.UserService.Messaging;
 using Azf.UserService.Sql;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -65,6 +66,15 @@ namespace Azf.UserService
             //    });
             //}
             //this.db.SaveChanges();
+
+            this.db.AddQueueMessage(
+                Shared.Messaging.QueueName.User,
+                new ExampleAsyncMessage
+                {
+                    TestValue = 1000
+                });
+            
+            await this.db.SaveChangesAsync();
 
             var users = await this.db.Users.ToListAsync();
             var names = string.Join(',', users.Select(u => u.Name).ToArray());
