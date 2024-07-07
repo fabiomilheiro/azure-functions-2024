@@ -9,27 +9,14 @@ public interface IOutboxMessageService
         where TMessage : AsyncMessage;
 }
 
-public class OutboxMessageService : IOutboxMessageService
+public static class SqlDbContextOutboxExtensions
 {
-    private readonly SqlDbContext db;
-    private readonly IJsonService jsonService;
-
-    public OutboxMessageService(
-        SqlDbContext db,
-        IJsonService jsonService)
-    {
-        this.db = db;
-        this.jsonService = jsonService;
-    }
-
-    public void AddQueueMessage<TMessage>(TMessage message) // Change to dbcontext extension method.
+    public static void AddQueueMessage<TMessage>(
+        this SqlDbContext db,
+        TMessage message)
         where TMessage : AsyncMessage
     {
-
-        if (message == null)
-        {
-            throw new ArgumentNullException(nameof(message));
-        }
+        ArgumentNullException.ThrowIfNull(message, nameof(message));
 
         if (string.IsNullOrEmpty(message.MessageId))
         {
@@ -37,10 +24,10 @@ public class OutboxMessageService : IOutboxMessageService
         }
 
         var now = DateTime.UtcNow;
-        this.db.QueueMessages.Add(new QueueMessage
+        db.QueueMessages.Add(new QueueMessage
         {
             MessageId = message.MessageId,
-            Request = this.jsonService.Serialize(message),
+            Request = db.Deps.JsonService.Serialize(message),
             RequestTypeName = message.TypeName,
             State = OutboxMessageState.Waiting,
             Type = OutboxMessageType.Queue,

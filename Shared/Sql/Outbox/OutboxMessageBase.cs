@@ -1,4 +1,5 @@
 ﻿using Azf.Shared.Sql.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Azf.Shared.Sql.Outbox;
 
@@ -19,7 +20,7 @@ public abstract class OutboxMessageBase : ICreatedAt, IUpdatedAt
     public required string RequestTypeName { get; set; }
 
     public DateTime CreatedAt { get; set; }
-    
+
     public DateTime UpdatedAt { get; set; }
 }
 

@@ -15,9 +15,9 @@ public class QueueClient : IQueueClient
 {
     private readonly IJsonService jsonService;
     private readonly ServiceBusClient serviceBus;
-    private readonly AppSettings settings;
+    private readonly SharedSettings settings;
 
-    public QueueClient(ServiceBusClient serviceBus, AppSettings settings, IJsonService jsonService)
+    public QueueClient(ServiceBusClient serviceBus, SharedSettings settings, IJsonService jsonService)
     {
         this.serviceBus = serviceBus;
         this.settings = settings;

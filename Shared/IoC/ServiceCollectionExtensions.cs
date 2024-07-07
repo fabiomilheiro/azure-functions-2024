@@ -1,7 +1,7 @@
-﻿using System.Text.Json;
-using Backend.App.Infrastructure.Types;
+﻿using Azf.Shared.Types;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json;
 
 namespace Azf.Shared.IoC;
 
@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
     {
         var dependencyRegistrations = TypeRepository
                                       .GetConcreteSubTypesOf<IDependencyRegistration>()
-                                      .Select(x => (IDependencyRegistration)Activator.CreateInstance(x))
+                                      .Select(x => (IDependencyRegistration)Activator.CreateInstance(x)!)
                                       .ToArray();
 
         foreach (var dependencyRegistration in dependencyRegistrations)

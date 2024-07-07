@@ -1,6 +1,6 @@
-﻿using Azure.Messaging.ServiceBus;
-using Backend.App.Infrastructure.Configuration;
-using Backend.App.Messaging;
+﻿using Azf.Shared.Configuration;
+using Azf.Shared.Messaging;
+using Azure.Messaging.ServiceBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,7 +20,7 @@ public class MessagingDependencyRegistration : IDependencyRegistration
 
         services.AddSingleton((serviceProvider) =>
         {
-            var settings = serviceProvider.GetRequiredService<AppSettings>();
+            var settings = serviceProvider.GetRequiredService<SharedSettings>();
             return new ServiceBusClient(settings.ServiceBusConnectionString);
         });
 

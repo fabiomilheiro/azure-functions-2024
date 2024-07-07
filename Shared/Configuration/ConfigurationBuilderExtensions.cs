@@ -1,6 +1,6 @@
-﻿using System.Reflection;
-using Azure.Identity;
+﻿using Azure.Identity;
 using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 namespace Azf.Shared.Configuration;
 
@@ -25,7 +25,7 @@ public static class ConfigurationBuilderExtensions
 
         if (request.EnvironmentName == AppEnvironment.Development.ToString())
         {
-            configurationBuilder.AddUserSecrets(Assembly.GetAssembly(typeof(AppSettings))!);
+            configurationBuilder.AddUserSecrets(Assembly.GetAssembly(typeof(SharedSettings))!);
         }
         else
         {

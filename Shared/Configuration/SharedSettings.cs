@@ -1,6 +1,6 @@
 ﻿namespace Azf.Shared.Configuration;
 
-public class AppSettings
+public class SharedSettings
 {
     public AppEnvironment Environment { get; set; }
 

@@ -1,5 +1,4 @@
-﻿using Azf.Shared.Sql;
-using Azf.Shared.Types;
+﻿using Azf.Shared.Types;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.DependencyInjection;
 

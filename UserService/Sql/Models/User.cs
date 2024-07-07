@@ -1,5 +1,5 @@
-﻿using System;
-using Azf.Shared.Sql.Models;
+﻿using Azf.Shared.Sql.Models;
+using System;
 
 namespace Azf.UserService.Sql.Models
 {

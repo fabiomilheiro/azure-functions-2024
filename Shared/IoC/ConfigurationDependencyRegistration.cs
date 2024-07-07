@@ -1,6 +1,5 @@
 ﻿using Azf.Shared.Configuration;
 using Azf.Shared.Time;
-using Backend.App.Infrastructure.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -11,7 +10,7 @@ public class ConfigurationDependencyRegistration : IDependencyRegistration
 {
     public void Execute(IServiceCollection services, IConfiguration configuration1)
     {
-        services.AddOptions<AppSettings>().Configure<IConfiguration>((settings, configuration) =>
+        services.AddOptions<SharedSettings>().Configure<IConfiguration>((settings, configuration) =>
         {
             var environmentValue = configuration["ASPNETCORE_ENVIRONMENT"];
             if (!Enum.TryParse(environmentValue, true, out AppEnvironment parsedEnvironment))
@@ -34,7 +33,7 @@ public class ConfigurationDependencyRegistration : IDependencyRegistration
             settings.EnableSensitiveDataLogging = parsedEnvironment != AppEnvironment.Production;
         });
         services.AddTransient(serviceProvider =>
-            serviceProvider.GetRequiredService<IOptions<AppSettings>>().Value);
+            serviceProvider.GetRequiredService<IOptions<SharedSettings>>().Value);
 
         services.AddSingleton<IClock, Clock>();
     }

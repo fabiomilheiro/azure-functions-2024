@@ -1,6 +1,6 @@
 ﻿namespace Azf.UserService.Helpers
 {
-    public class Settings
+    public class UserServiceSettings
     {
         public string ExampleSetting { get; set; }
     }

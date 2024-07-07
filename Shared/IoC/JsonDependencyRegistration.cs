@@ -1,5 +1,5 @@
-﻿using Backend.App.Infrastructure.Configuration;
-using Backend.App.Infrastructure.Json;
+﻿using Azf.Shared.Configuration;
+using Azf.Shared.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,7 +12,7 @@ public class JsonDependencyRegistration : IDependencyRegistration
         services.AddSingleton<IJsonService, JsonService>();
         services.AddSingleton(
             serviceProvider => JsonSerializerOptionsFactory.GetDefault(
-                serviceProvider.GetRequiredService<AppSettings>()
+                serviceProvider.GetRequiredService<SharedSettings>()
             ));
     }
 }

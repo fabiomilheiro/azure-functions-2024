@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using Azf.Shared.Configuration;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Azf.Shared.Json
@@ -7,7 +8,7 @@ namespace Azf.Shared.Json
     {
         private static JsonSerializerOptions? options;
 
-        public static JsonSerializerOptions GetDefault(AppSettings settings)
+        public static JsonSerializerOptions GetDefault(SharedSettings settings)
         {
             if (options != null)
             {

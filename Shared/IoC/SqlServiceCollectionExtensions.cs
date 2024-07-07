@@ -1,6 +1,6 @@
-﻿using Backend.App.Data.Sql.ChangeHandling;
-using Backend.App.Data.Sql.OnModelCreating;
-using Backend.App.Infrastructure.Types;
+﻿using Azf.Shared.Sql.ChangeHandling;
+using Azf.Shared.Sql.OnModelCreating;
+using Azf.Shared.Types;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Azf.Shared.IoC;

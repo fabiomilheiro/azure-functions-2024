@@ -2,7 +2,7 @@
 
 public abstract class AsyncMessage
 {
-    public required string MessageId { get; set; }
+    public string MessageId { get; set; }
 
     public string TypeName => this.GetType().Name;
 }

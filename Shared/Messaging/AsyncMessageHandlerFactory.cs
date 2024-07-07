@@ -21,7 +21,7 @@ public class AsyncMessageHandlerFactory : IAsyncMessageHandlerFactory
     {
         if (!AsyncMessageMappings.ByMessageTypeName.TryGetValue(messageTypeName, out var data))
         {
-            throw new BackendException(
+            throw new Exception(
                 $"Could not find the message handler for message type '{messageTypeName}'." +
                 $"{Environment.NewLine}Either correct the message type or implement the" +
                 "respective handler.");

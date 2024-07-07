@@ -5,7 +5,6 @@ using Azf.UserService.Helpers;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.IO;
 
 [assembly: FunctionsStartup(typeof(Startup))]
 namespace Azf.UserService
@@ -27,7 +26,7 @@ namespace Azf.UserService
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddSingleton<IExampleService, DefaultExampleService>();
-            builder.Services.AddOptions<Settings>().Configure<IConfiguration>((settings, configuration) =>
+            builder.Services.AddOptions<UserServiceSettings>().Configure<IConfiguration>((settings, configuration) =>
             {
                 configuration.Bind(settings);
             });

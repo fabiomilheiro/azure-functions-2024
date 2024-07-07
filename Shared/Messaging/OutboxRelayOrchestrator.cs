@@ -1,5 +1,6 @@
 ﻿using Azf.Shared.Json;
 using Azf.Shared.Sql;
+using Azf.Shared.Sql.Outbox;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -42,7 +43,7 @@ public class OutboxRelayer : IOutboxRelayer
         }
 
         await this.db.SaveChangesAsync();
-        
+
         var succeeded = false;
 
         try
@@ -78,7 +79,7 @@ public class OutboxRelayer : IOutboxRelayer
     {
         if (!AsyncMessageMappings.ByMessageTypeName.TryGetValue(message.RequestTypeName, out var mapping))
         {
-            throw new BackendException(
+            throw new Exception(
                 $"The message '{message.RequestTypeName}' could not be found.");
         }
 

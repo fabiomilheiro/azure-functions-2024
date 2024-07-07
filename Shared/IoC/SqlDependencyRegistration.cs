@@ -1,6 +1,5 @@
-﻿using Backend.App.Data.Outbox;
-using Backend.App.Data.Sql.Context;
-using Backend.App.Infrastructure.Configuration;
+﻿using Azf.Shared.Configuration;
+using Azf.Shared.Sql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,9 +10,9 @@ public class SqlDependencyRegistration : IDependencyRegistration
 {
     public void Execute(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<AppDbContext>((serviceProvider, builder) =>
+        services.AddDbContext<SqlDbContext>((serviceProvider, builder) =>
         {
-            var appSettings = serviceProvider.GetRequiredService<AppSettings>();
+            var appSettings = serviceProvider.GetRequiredService<SharedSettings>();
             builder
                 .EnableSensitiveDataLogging(appSettings.EnableSensitiveDataLogging)
                 .UseLazyLoadingProxies()
@@ -29,6 +28,5 @@ public class SqlDependencyRegistration : IDependencyRegistration
 
         //services.AddEntityFrameworkProxies();
         services.AddSqlDependencies();
-        services.AddScoped<IOutboxMessageService, OutboxMessageService>();
     }
 }

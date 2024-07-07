@@ -1,27 +1,42 @@
-﻿using Azf.Shared.Sql.ChangeHandling;
+﻿using Azf.Shared.Json;
+using Azf.Shared.Messaging;
+using Azf.Shared.Messaging.CommonHandlers;
+using Azf.Shared.Sql.ChangeHandling;
+using Azf.Shared.Sql.OnModelCreating;
 using Azf.Shared.Sql.Outbox;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Azf.Shared.Sql
 {
-    public class SqlDbContext : DbContext
-    {
-        private readonly DbContextOptions<SqlDbContext> options;
-        private readonly IEntityChangeHandlingOrchestrator entityChangeHandlingOrchestrator;
-        private readonly ILogger<SqlDbContext> logger;
-
-        public SqlDbContext(
-            DbContextOptions<SqlDbContext> options,
+    public class SqlDbContextDependencies(
+        DbContextOptions<SqlDbContext> options,
         IEntityChangeHandlingOrchestrator entityChangeHandlingOrchestrator,
-        //IOnModelCreatingOrchestrator onModelCreatingOrchestrator,
-        //IQueueClient queueClient,
+        IOnModelCreatingOrchestrator onModelCreatingOrchestrator,
+        IQueueClient queueClient,
+        IJsonService jsonService,
         ILogger<SqlDbContext> logger)
-        : base(options)
+    {
+        public DbContextOptions<SqlDbContext> Options { get; private set; } = options;
+        
+        public IEntityChangeHandlingOrchestrator EntityChangeHandlingOrchestrator { get; private set; } = entityChangeHandlingOrchestrator;
+        
+        public IOnModelCreatingOrchestrator OnModelCreatingOrchestrator { get; private set; } = onModelCreatingOrchestrator;
+        
+        public IQueueClient QueueClient { get; private set; } = queueClient;
+        
+        public IJsonService JsonService { get;private set; }   = jsonService;  
+
+        public ILogger<SqlDbContext> Logger { get; private set; } = logger;
+    }
+
+    public abstract class SqlDbContext : DbContext
+    {
+        public SqlDbContextDependencies Deps { get;private set; }   
+
+        public SqlDbContext(SqlDbContextDependencies deps)
         {
-            this.options = options;
-            this.entityChangeHandlingOrchestrator = entityChangeHandlingOrchestrator;
-            this.logger = logger;
+            this.Deps = deps;
         }
 
         public DbSet<OutboxMessageBase> OutboxMessages { get; set; }
@@ -58,11 +73,12 @@ namespace Azf.Shared.Sql
 
         private OnSaveChangesResult OnSaveChanges()
         {
-            //this.entityChangeHandlingOrchestrator.Handle(this);
+
+            this.Deps.EntityChangeHandlingOrchestrator.Handle(this);
 
             return new OnSaveChangesResult
             {
-                //HasOutboxMessages = this.ChangeTracker.Entries<OutboxMessageBase>().Any(x => x.State == EntityState.Added),
+                HasOutboxMessages = this.ChangeTracker.Entries<OutboxMessageBase>().Any(x => x.State == EntityState.Added),
             };
         }
 
@@ -72,12 +88,11 @@ namespace Azf.Shared.Sql
             {
                 try
                 {
-                    await Task.Delay(0);
-                    //await this.queueClient.SendAsync(new RelayOutboxMessagesAsyncMessage());
+                    await this.Deps.QueueClient.SendAsync(new RelayOutboxMessagesAsyncMessage());
                 }
                 catch (Exception e)
                 {
-                    logger.LogWarning(e, "Could not send relay outbox message to queue.");
+                    this.Deps.Logger.LogWarning(e, "Could not send relay outbox message to queue.");
                 }
             }
         }

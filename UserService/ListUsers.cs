@@ -1,23 +1,23 @@
-using System.IO;
-using System.Threading.Tasks;
+using Azf.Shared;
+using Azf.UserService.Helpers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Microsoft.Extensions.Options;
-using Azf.Shared;
-using Azf.UserService.Helpers;
+using Newtonsoft.Json;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Azf.UserService
 {
-    public class Function1
+    public class ListUsers
     {
         private readonly IExampleService exampleService;
-        private readonly Settings settings;
+        private readonly UserServiceSettings settings;
 
-        public Function1(IExampleService exampleService, IOptions<Settings> settings)
+        public ListUsers(IExampleService exampleService, IOptions<UserServiceSettings> settings)
         {
             this.exampleService = exampleService;
             this.settings = settings.Value;
