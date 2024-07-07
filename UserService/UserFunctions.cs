@@ -13,14 +13,14 @@ using System.Threading.Tasks;
 
 namespace Azf.UserService
 {
-    public class UserManagement
+    public class UserFunctions
     {
         private readonly IExampleService exampleService;
         private readonly UserServiceSettings settings;
         private readonly UserServiceSettings settings2;
         private readonly UserSqlDbContext db;
 
-        public UserManagement(
+        public UserFunctions(
             IExampleService exampleService,
             IOptions<UserServiceSettings> settings,
             UserServiceSettings settings2,

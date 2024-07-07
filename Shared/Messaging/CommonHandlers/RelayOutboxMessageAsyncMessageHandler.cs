@@ -25,6 +25,6 @@ public class RelayOutboxMessagesAsyncMessageHandler : AsyncMessageHandlerBase<Re
     {
         this.logger.LogInformation($"Relaying outbox messages...");
 
-        await this.outboxRelayer.RelayMessagesAsync();
+        await this.outboxRelayer.RelayMessageBatchAsync();
     }
 }

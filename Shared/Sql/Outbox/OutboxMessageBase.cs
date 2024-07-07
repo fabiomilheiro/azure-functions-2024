@@ -1,5 +1,4 @@
 ﻿using Azf.Shared.Sql.Models;
-using System.ComponentModel.DataAnnotations;
 
 namespace Azf.Shared.Sql.Outbox;
 

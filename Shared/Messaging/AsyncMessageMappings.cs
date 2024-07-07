@@ -37,7 +37,7 @@ public static class AsyncMessageMappings
 
 public class AsyncMessageMapping
 {
-    public Type HandlerType { get; set; }
+    public required Type HandlerType { get; set; }
 
-    public Type MessageType { get; set; }
+    public required Type MessageType { get; set; }
 }

@@ -8,13 +8,15 @@ namespace Azf.Shared.Messaging;
 
 public interface IOutboxRelayer
 {
-    Task RelayMessagesAsync();
+    Task RelayMessageBatchAsync();
+
+    Task RelayMessageBatchAsync(OutboxMessageBase[] outboxMessages);
 }
 
 public class OutboxRelayer : IOutboxRelayer
 {
     public const int MaxNumberOfAttempts = 10;
-    public const int PageSize = 10;
+    public const int PageSize = 100;
 
     private readonly SqlDbContext db;
     private readonly IJsonService jsonService;
@@ -37,6 +39,11 @@ public class OutboxRelayer : IOutboxRelayer
     {
         var outboxMessages = await this.GetNextBatchAsync();
 
+        await this.RelayMessageBatchAsync(outboxMessages);
+    }
+
+    public async Task RelayMessageBatchAsync(OutboxMessageBase[] outboxMessages)
+    {
         foreach (var outboxMessage in outboxMessages)
         {
             outboxMessage.State = OutboxMessageState.Processing;
@@ -57,7 +64,7 @@ public class OutboxRelayer : IOutboxRelayer
             try
             {
                 var asyncMessages =
-                    outboxMessages
+                    inGroup
                         .Select(om => (AsyncMessage)this.jsonService.Deserialize(om.Request,
                             GetMessageType(om)))
                         .ToArray();
@@ -72,20 +79,20 @@ public class OutboxRelayer : IOutboxRelayer
                         throw new NotImplementedException($"Relaying of message type '{group.Key.Type}' not supported yet");
                 }
 
-                await this.RemoveRelayedMessages(outboxMessages);
+                await this.RemoveRelayedMessages(inGroup);
             }
             catch (Exception exception)
             {
                 this.logger.LogError(
                     exception,
                     "Could not relay {numberOfMessages} messages to the queue.",
-                    outboxMessages.Length);
+                    inGroup.Length);
 
-                // TODO: set number of attempts and state.
-                await this.ProcessFailedAttemptAsync(outboxMessages);
+                await this.ProcessFailedAttemptAsync(inGroup);
             }
         }
     }
+    
 
     private static Type GetMessageType(OutboxMessageBase message)
     {

@@ -6,6 +6,8 @@ namespace Azf.UserService.Sql
 {
     public class UserSqlDbContext : SqlDbContext
     {
+        public const string Schema = "usersvc";
+
         public UserSqlDbContext(SqlDbContextDependencies deps)
             : base(deps)
         {
@@ -13,7 +15,7 @@ namespace Azf.UserService.Sql
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema("usersvc");
+            modelBuilder.HasDefaultSchema(Schema);
         }
 
         public DbSet<User> Users { get; set; }
