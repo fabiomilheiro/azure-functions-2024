@@ -6,9 +6,9 @@ using Microsoft.Extensions.Options;
 
 namespace Azf.Shared.IoC;
 
-public class ConfigurationDependencyRegistration : IDependencyRegistration
+public static class ServiceCollectionConfigurationExtensions
 {
-    public void Execute(IServiceCollection services, DependencyRegistrationContext context)
+    public static void AddConfiguration(this IServiceCollection services)
     {
         services.AddOptions<SharedSettings>().Configure<IConfiguration>((settings, configuration) =>
         {

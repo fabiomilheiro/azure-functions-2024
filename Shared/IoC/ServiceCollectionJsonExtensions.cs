@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Azf.Shared.IoC;
 
-public class JsonDependencyRegistration : IDependencyRegistration
+public static class ServiceCollectionJsonExtensions
 {
-    public void Execute(IServiceCollection services, DependencyRegistrationContext context)
+    public static void AddJson(this IServiceCollection services)
     {
         services.AddSingleton<IJsonService, JsonService>();
         services.AddSingleton(

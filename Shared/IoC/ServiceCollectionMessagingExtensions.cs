@@ -6,9 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Azf.Shared.IoC;
 
-public class MessagingDependencyRegistration : IDependencyRegistration
+public static class ServiceCollectionMessagingExtensions
 {
-    public void Execute(IServiceCollection services, DependencyRegistrationContext context)
+    public static void AddMessaging(this IServiceCollection services)
     {
         services.AddScoped<IMessageHandlingOrchestrator, MessageHandlingOrchestrator>();
         services.AddScoped<IAsyncMessageHandlerFactory, AsyncMessageHandlerFactory>();

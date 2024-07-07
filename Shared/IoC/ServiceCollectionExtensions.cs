@@ -7,21 +7,12 @@ namespace Azf.Shared.IoC;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddServices(
-        this IServiceCollection services,
-        DependencyRegistrationContext context
-        )
+    public static IServiceCollection AddCommonServices(this IServiceCollection services)
     {
-        var dependencyRegistrations = TypeRepository
-                                      .GetConcreteSubTypesOf<IDependencyRegistration>()
-                                      .Select(x => (IDependencyRegistration)Activator.CreateInstance(x)!)
-                                      .ToArray();
-
-        foreach (var dependencyRegistration in dependencyRegistrations)
-        {
-            dependencyRegistration.Execute(services, context);
-        }
-
+        services.AddConfiguration();
+        services.AddJson();
+        services.AddMessaging();
+        
         return services;
     }
 }

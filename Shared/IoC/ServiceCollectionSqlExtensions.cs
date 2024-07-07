@@ -9,11 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Azf.Shared.IoC;
 
-public class SqlDependencyRegistration : IDependencyRegistration
+public static class ServiceCollectionSqlExtensions
 {
-    public void Execute(IServiceCollection services, DependencyRegistrationContext context)
+    public static void AddSqlDbContext<TDbContext>(this IServiceCollection services)
+        where TDbContext : SqlDbContext
     {
-        services.AddDbContext<SqlDbContext>((serviceProvider, builder) =>
+        services.AddDbContext<TDbContext>((serviceProvider, builder) =>
         {
             var appSettings = serviceProvider.GetRequiredService<SharedSettings>();
             builder
@@ -29,12 +30,11 @@ public class SqlDependencyRegistration : IDependencyRegistration
                     });
         });
 
-        //services.AddEntityFrameworkProxies();
-        this.AddOnModelCreatingServices(services);
-        this.AddEntityChangeHandlingServices(services);
+        AddOnModelCreatingServices(services);
+        AddEntityChangeHandlingServices(services);
     }
 
-    private void AddOnModelCreatingServices(IServiceCollection services)
+    private static void AddOnModelCreatingServices(IServiceCollection services)
     {
         services.AddSingleton<IOnModelCreatingOrchestrator, OnModelCreatingOrchestrator>();
 
@@ -50,7 +50,7 @@ public class SqlDependencyRegistration : IDependencyRegistration
         }
     }
 
-    private void AddEntityChangeHandlingServices(IServiceCollection services)
+    private static void AddEntityChangeHandlingServices(IServiceCollection services)
     {
         services.AddScoped<IEntityChangeHandlingOrchestrator, EntityChangeHandlingOrchestrator>();
 

@@ -28,12 +28,9 @@ namespace Azf.UserService
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddServices(
-                new DependencyRegistrationContext
-                {
-                    Configuration= builder.GetContext().Configuration,
-                    DbContext= typeof(UserSqlDbContext),
-                });
+            builder.Services.AddCommonServices();
+            
+            builder.Services.AddSqlDbContext<UserSqlDbContext>();
 
             builder.Services.AddSingleton<IExampleService, DefaultExampleService>();
             builder.Services.AddOptions<UserServiceSettings>().Configure<IConfiguration>((settings, configuration) =>

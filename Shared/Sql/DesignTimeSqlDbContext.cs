@@ -26,11 +26,7 @@ public abstract class DesignTimeSqlDbContextFactory<TDbContext> : IDesignTimeDbC
                             .Build();
 
         var serviceProvider = new ServiceCollection()
-                              .AddServices(
-                                new DependencyRegistrationContext
-                                {
-                                    Configuration = configuration,
-                                })
+                              .AddCommonServices()
                               .AddSingleton<IConfiguration>(configuration)
                               .BuildServiceProvider();
 
