@@ -7,6 +7,7 @@ public class RelayOutboxMessagesAsyncMessage
 {
 }
 
+// TODO: Do I still need this if we use the change tracker?
 public class RelayOutboxMessagesAsyncMessageHandler : AsyncMessageHandlerBase<RelayOutboxMessagesAsyncMessage>
 {
     private readonly IOutboxRelayer outboxRelayer;

@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Azf.UserService.Sql
 {
-    internal class UserServiceSqlDbContext : SqlDbContext
+    public class UserSqlDbContext : SqlDbContext
     {
-        public UserServiceSqlDbContext(SqlDbContextDependencies deps)
+        public UserSqlDbContext(SqlDbContextDependencies deps)
             : base(deps)
         {
         }

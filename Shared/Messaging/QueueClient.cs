@@ -6,9 +6,9 @@ namespace Azf.Shared.Messaging;
 
 public interface IQueueClient
 {
-    Task SendAsync(AsyncMessage message);
+    Task SendAsync(string queueName, AsyncMessage message);
 
-    Task SendAsync(IEnumerable<AsyncMessage> messages);
+    Task SendAsync(string queueName, IEnumerable<AsyncMessage> messages);
 }
 
 public class QueueClient : IQueueClient
@@ -24,12 +24,12 @@ public class QueueClient : IQueueClient
         this.jsonService = jsonService;
     }
 
-    public Task SendAsync(AsyncMessage message)
+    public Task SendAsync(string queueName, AsyncMessage message)
     {
-        return this.SendAsync(new[] { message });
+        return this.SendAsync(queueName, [message]);
     }
 
-    public async Task SendAsync(IEnumerable<AsyncMessage> messages)
+    public async Task SendAsync(string queueName, IEnumerable<AsyncMessage> messages)
     {
         var serviceBusMessages =
             messages
@@ -38,7 +38,7 @@ public class QueueClient : IQueueClient
                 .ToArray();
 
         await this.serviceBus
-                  .CreateSender(this.settings.ServiceBusQueueName)
+                  .CreateSender(queueName.ToString())
                   .SendMessagesAsync(serviceBusMessages);
     }
 }

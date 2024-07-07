@@ -4,23 +4,23 @@ public class SharedSettings
 {
     public AppEnvironment Environment { get; set; }
 
-    public string JwtSecretKey { get; set; }
+    public required string JwtSecretKey { get; set; }
 
-    public string JwtAuthority { get; set; }
+    public required string JwtAuthority { get; set; }
 
-    public string JwtIssuer { get; set; }
+    public required string JwtIssuer { get; set; }
 
-    public string JwtAudience { get; set; }
+    public required string JwtAudience { get; set; }
 
-    public string SqlConnectionString { get; set; }
+    public required string SqlConnectionString { get; set; }
 
-    public string ServiceBusConnectionString { get; set; }
+    public required string ServiceBusConnectionString { get; set; }
 
-    public string ServiceBusQueueName { get; set; }
+    //public required string ServiceBusQueueName { get; set; }
 
-    public string BunnyStorageApiKey { get; set; }
+    public required string BunnyStorageApiKey { get; set; }
 
-    public string BunnyStorageApiBaseUrl { get; set; }
+    public required string BunnyStorageApiBaseUrl { get; set; }
 
-    public bool EnableSensitiveDataLogging { get; set; }
+    public required bool EnableSensitiveDataLogging { get; set; }
 }

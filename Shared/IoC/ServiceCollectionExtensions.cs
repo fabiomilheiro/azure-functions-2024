@@ -19,12 +19,6 @@ public static class ServiceCollectionExtensions
             dependencyRegistration.Execute(services, configuration);
         }
 
-        services.Configure<JsonSerializerOptions>(options =>
-        {
-            options.PropertyNameCaseInsensitive = true;
-            options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-        });
-
         return services;
     }
 }

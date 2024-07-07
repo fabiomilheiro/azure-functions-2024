@@ -1,5 +1,6 @@
 using Azf.Shared;
 using Azf.UserService.Helpers;
+using Azf.UserService.Sql;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -12,20 +13,29 @@ using System.Threading.Tasks;
 
 namespace Azf.UserService
 {
-    public class ListUsers
+    public class UserManagement
     {
         private readonly IExampleService exampleService;
         private readonly UserServiceSettings settings;
+        private readonly UserServiceSettings settings2;
+        private readonly UserSqlDbContext db;
 
-        public ListUsers(IExampleService exampleService, IOptions<UserServiceSettings> settings)
+        public UserManagement(
+            IExampleService exampleService,
+            IOptions<UserServiceSettings> settings,
+            UserServiceSettings settings2,
+            UserSqlDbContext db
+            )
         {
             this.exampleService = exampleService;
             this.settings = settings.Value;
+            this.settings2 = settings2;
+            this.db = db;
         }
 
-        [FunctionName("Function1")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+        [FunctionName("ListUsers")]
+        public async Task<IActionResult> ListUsers(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");

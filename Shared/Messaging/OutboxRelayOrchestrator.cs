@@ -33,7 +33,7 @@ public class OutboxRelayer : IOutboxRelayer
         this.logger = logger;
     }
 
-    public async Task RelayMessagesAsync()
+    public async Task RelayMessageBatchAsync()
     {
         var outboxMessages = await this.GetNextBatchAsync();
 
@@ -44,34 +44,46 @@ public class OutboxRelayer : IOutboxRelayer
 
         await this.db.SaveChangesAsync();
 
-        var succeeded = false;
+        var outboxMessagesGroupedByTypeAndTargetName = outboxMessages.GroupBy(m => new
+        {
+            m.Type,
+            m.TargetName,
+        }).ToArray();
 
-        try
+        foreach (var group in outboxMessagesGroupedByTypeAndTargetName)
         {
-            var asyncMessages =
-                outboxMessages
-                    .Select(om => (AsyncMessage)this.jsonService.Deserialize(om.Request,
-                        GetMessageType(om)))
-                    .ToArray();
-            await this.queueClient.SendAsync(asyncMessages);
-            succeeded = true;
-        }
-        catch (Exception exception)
-        {
-            this.logger.LogError(
-                exception,
-                "Could not relay {numberOfMessages} messages to the queue.",
-                outboxMessages.Length);
-            // TODO: set number of attempts and state.
-        }
+            var inGroup = group.ToArray();
 
-        if (succeeded)
-        {
-            await this.RemoveRelayedMessages(outboxMessages);
-        }
-        else
-        {
-            await this.ProcessFailedAttemptAsync(outboxMessages);
+            try
+            {
+                var asyncMessages =
+                    outboxMessages
+                        .Select(om => (AsyncMessage)this.jsonService.Deserialize(om.Request,
+                            GetMessageType(om)))
+                        .ToArray();
+
+                switch (group.Key.Type)
+                {
+                    case OutboxMessageType.Queue:
+                        await this.queueClient.SendAsync(group.Key.TargetName, asyncMessages);
+                        break;
+
+                    default:
+                        throw new NotImplementedException($"Relaying of message type '{group.Key.Type}' not supported yet");
+                }
+
+                await this.RemoveRelayedMessages(outboxMessages);
+            }
+            catch (Exception exception)
+            {
+                this.logger.LogError(
+                    exception,
+                    "Could not relay {numberOfMessages} messages to the queue.",
+                    outboxMessages.Length);
+
+                // TODO: set number of attempts and state.
+                await this.ProcessFailedAttemptAsync(outboxMessages);
+            }
         }
     }
 

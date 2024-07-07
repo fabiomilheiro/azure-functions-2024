@@ -22,14 +22,26 @@ public class ConfigurationDependencyRegistration : IDependencyRegistration
             }
 
             settings.Environment = parsedEnvironment;
-            settings.SqlConnectionString = configuration["SqlConnectionString"];
-            settings.ServiceBusConnectionString = configuration["ServiceBusConnectionString"];
-            settings.ServiceBusQueueName = configuration["ServiceBusQueueName"];
-            //settings.SearchBaseUrl = configuration["SearchBaseUrl"];
-            //settings.SearchAdminApiKey = configuration["SearchAdminApiKey"];
-            settings.BunnyStorageApiKey = configuration["BunnyStorageApiKey"];
-            settings.BunnyStorageApiBaseUrl = configuration["BunnyStorageApiBaseUrl"];
-            bool.TryParse(configuration["EnableSensitiveDataLogging"], out var enableSensitiveDataLogging);
+
+            configuration.Bind(settings);
+
+            ArgumentException.ThrowIfNullOrWhiteSpace(
+                settings.SqlConnectionString,
+                nameof(SharedSettings.SqlConnectionString));
+
+            ArgumentException.ThrowIfNullOrWhiteSpace(
+                settings.ServiceBusConnectionString,
+                nameof(SharedSettings.ServiceBusConnectionString));
+
+            ArgumentException.ThrowIfNullOrWhiteSpace(
+                settings.BunnyStorageApiKey,
+                nameof(SharedSettings.BunnyStorageApiKey));
+
+            ArgumentException.ThrowIfNullOrWhiteSpace(
+                settings.BunnyStorageApiBaseUrl,
+                nameof(SharedSettings.BunnyStorageApiBaseUrl));
+
+
             settings.EnableSensitiveDataLogging = parsedEnvironment != AppEnvironment.Production;
         });
         services.AddTransient(serviceProvider =>

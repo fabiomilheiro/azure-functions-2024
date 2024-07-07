@@ -9,9 +9,12 @@ public abstract class OutboxMessageBase : ICreatedAt, IUpdatedAt
 
     public required string MessageId { get; set; }
 
-    public OutboxMessageType Type { get; set; }
+    public required OutboxMessageType Type { get; set; }
 
-    public OutboxMessageState State { get; set; }
+    // Queue or topic name.
+    public required string TargetName { get; set; }
+
+    public required OutboxMessageState State { get; set; }
 
     public int NumberOfAttempts { get; set; }
 
