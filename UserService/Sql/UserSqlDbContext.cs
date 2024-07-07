@@ -8,8 +8,8 @@ namespace Azf.UserService.Sql
     {
         public const string Schema = "usersvc";
 
-        public UserSqlDbContext(SqlDbContextDependencies deps)
-            : base(deps)
+        public UserSqlDbContext(DbContextOptions<UserSqlDbContext> options, SqlDbContextDependencies deps)
+            : base(options, deps)
         {
         }
 

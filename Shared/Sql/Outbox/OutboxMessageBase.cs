@@ -1,7 +1,9 @@
 ﻿using Azf.Shared.Sql.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Azf.Shared.Sql.Outbox;
 
+[EntityTypeConfiguration<OutboxMessageBaseConfiguration, OutboxMessageBase>]
 public abstract class OutboxMessageBase : ICreatedAt, IUpdatedAt
 {
     public Guid RowId { get; set; }

@@ -2,6 +2,7 @@
 
 namespace Azf.Shared.Sql.OnModelCreating;
 
+// TODO: Replace with configuration classes.
 public interface IOnModelCreatingOrchestrator
 {
     void Execute(ModelBuilder modelBuilder);

@@ -1,5 +1,6 @@
 ﻿using Azf.Shared.Configuration;
 using Azf.Shared.IoC;
+using Azf.Shared.Json;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,22 +13,23 @@ public abstract class DesignTimeSqlDbContextFactory<TDbContext> : IDesignTimeDbC
     public TDbContext CreateDbContext(string[] args)
     {
         var configuration = new ConfigurationBuilder()
+            //.AddUserSecrets<SharedSettings>()
             .AddConfigurations(
                 new AddConfigurationsRequest
                 {
-                    ApplicationRootPath = "",
+                    ApplicationRootPath = AppDomain.CurrentDomain.BaseDirectory,
                     EnvironmentName = AppEnvironment.Development.ToString(),
                 })
             .AddInMemoryCollection(
                 new Dictionary<string, string?>
                 {
-                    { "ASPNETCORE_ENVIRONMENT", AppEnvironment.Development.ToString() },
+                    { "Environment", AppEnvironment.Development.ToString() },
                 })
-            .Build();
+            .Build()
 
         var serviceProvider = new ServiceCollection()
-                              .AddCommonServices()
                               .AddSingleton<IConfiguration>(configuration)
+                              .AddCommonServices()
                               .AddSqlDbContext<TDbContext>()
                               .BuildServiceProvider();
 
