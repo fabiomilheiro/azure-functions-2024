@@ -7,7 +7,7 @@ namespace Azf.Shared.IoC;
 
 public class JsonDependencyRegistration : IDependencyRegistration
 {
-    public void Execute(IServiceCollection services, IConfiguration configuration)
+    public void Execute(IServiceCollection services, DependencyRegistrationContext context)
     {
         services.AddSingleton<IJsonService, JsonService>();
         services.AddSingleton(

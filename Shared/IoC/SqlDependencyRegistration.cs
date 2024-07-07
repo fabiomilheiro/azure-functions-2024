@@ -11,7 +11,7 @@ namespace Azf.Shared.IoC;
 
 public class SqlDependencyRegistration : IDependencyRegistration
 {
-    public void Execute(IServiceCollection services, IConfiguration configuration)
+    public void Execute(IServiceCollection services, DependencyRegistrationContext context)
     {
         services.AddDbContext<SqlDbContext>((serviceProvider, builder) =>
         {

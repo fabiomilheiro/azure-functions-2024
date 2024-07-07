@@ -1,4 +1,5 @@
-﻿using Azf.Shared.Types;
+﻿using Azf.Shared.Sql;
+using Azf.Shared.Types;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -6,7 +7,10 @@ namespace Azf.Shared.IoC;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddServices(
+        this IServiceCollection services,
+        DependencyRegistrationContext context
+        )
     {
         var dependencyRegistrations = TypeRepository
                                       .GetConcreteSubTypesOf<IDependencyRegistration>()
@@ -15,7 +19,7 @@ public static class ServiceCollectionExtensions
 
         foreach (var dependencyRegistration in dependencyRegistrations)
         {
-            dependencyRegistration.Execute(services, configuration);
+            dependencyRegistration.Execute(services, context);
         }
 
         return services;

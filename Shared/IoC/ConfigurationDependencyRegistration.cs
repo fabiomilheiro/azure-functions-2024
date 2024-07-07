@@ -8,7 +8,7 @@ namespace Azf.Shared.IoC;
 
 public class ConfigurationDependencyRegistration : IDependencyRegistration
 {
-    public void Execute(IServiceCollection services, IConfiguration configuration1)
+    public void Execute(IServiceCollection services, DependencyRegistrationContext context)
     {
         services.AddOptions<SharedSettings>().Configure<IConfiguration>((settings, configuration) =>
         {

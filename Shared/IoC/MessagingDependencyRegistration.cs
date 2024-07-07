@@ -8,7 +8,7 @@ namespace Azf.Shared.IoC;
 
 public class MessagingDependencyRegistration : IDependencyRegistration
 {
-    public void Execute(IServiceCollection services, IConfiguration configuration)
+    public void Execute(IServiceCollection services, DependencyRegistrationContext context)
     {
         services.AddScoped<IMessageHandlingOrchestrator, MessageHandlingOrchestrator>();
         services.AddScoped<IAsyncMessageHandlerFactory, AsyncMessageHandlerFactory>();

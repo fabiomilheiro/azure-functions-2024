@@ -3,6 +3,7 @@ using Azf.Shared.Configuration;
 using Azf.Shared.IoC;
 using Azf.UserService;
 using Azf.UserService.Helpers;
+using Azf.UserService.Sql;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +28,12 @@ namespace Azf.UserService
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddServices(builder.GetContext().Configuration);
+            builder.Services.AddServices(
+                new DependencyRegistrationContext
+                {
+                    Configuration= builder.GetContext().Configuration,
+                    DbContext= typeof(UserSqlDbContext),
+                });
 
             builder.Services.AddSingleton<IExampleService, DefaultExampleService>();
             builder.Services.AddOptions<UserServiceSettings>().Configure<IConfiguration>((settings, configuration) =>
