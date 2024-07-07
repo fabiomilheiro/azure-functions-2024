@@ -9,7 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Azf.UserService
@@ -49,12 +51,27 @@ namespace Azf.UserService
 
             var result = exampleService.Execute();
 
+            //for (var i = 0; i < 100; i++)
+            //{
+            //    var id = Guid.NewGuid();
+
+            //    this.db.Users.Add(new Sql.Models.User
+            //    {
+            //        CreatedAt = DateTime.Now,
+            //        Name = $"User {id}",
+            //        Email= $"user{id}@mailinator.com",
+            //        Id= Guid.NewGuid(),
+            //        UpdatedAt= DateTime.Now,
+            //    });
+            //}
+            //this.db.SaveChanges();
+
             var users = await this.db.Users.ToListAsync();
-
-
+            var names = string.Join(',', users.Select(u => u.Name).ToArray());
             string responseMessage = string.IsNullOrEmpty(name)
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name} (result={result}, setting={settings.ExampleSetting}). This HTTP triggered function executed successfully.";
+                : $"Hello, {name} (result={result}, setting={settings.ExampleSetting}). This HTTP triggered function executed successfully." +
+                $" users = {names} ({users.Count})";
 
 
 

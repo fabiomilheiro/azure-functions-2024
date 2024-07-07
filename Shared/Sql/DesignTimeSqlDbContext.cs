@@ -13,7 +13,6 @@ public abstract class DesignTimeSqlDbContextFactory<TDbContext> : IDesignTimeDbC
     public TDbContext CreateDbContext(string[] args)
     {
         var configuration = new ConfigurationBuilder()
-            //.AddUserSecrets<SharedSettings>()
             .AddConfigurations(
                 new AddConfigurationsRequest
                 {
