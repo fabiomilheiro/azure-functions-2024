@@ -42,6 +42,8 @@ public class OutboxRelayer : IOutboxRelayer
         await this.RelayMessageBatchAsync(outboxMessages);
     }
 
+    // TODO: Separate outbox queue/topic messages by using EF core TPC:
+    // https://learn.microsoft.com/en-us/ef/core/modeling/inheritance
     public async Task RelayMessageBatchAsync(OutboxMessageBase[] outboxMessages)
     {
         foreach (var outboxMessage in outboxMessages)
@@ -51,11 +53,7 @@ public class OutboxRelayer : IOutboxRelayer
 
         await this.db.SaveChangesAsync();
 
-        var outboxMessagesGroupedByTypeAndTargetName = outboxMessages.GroupBy(m => new
-        {
-            m.Type,
-            m.TargetName,
-        }).ToArray();
+        var outboxMessagesGroupedByTypeAndTargetName = outboxMessages.GroupBy(m => m.TargetName).ToArray();
 
         foreach (var group in outboxMessagesGroupedByTypeAndTargetName)
         {

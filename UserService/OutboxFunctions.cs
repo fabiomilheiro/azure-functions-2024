@@ -12,10 +12,11 @@ namespace Azf.UserService
 {
     public static class OutboxFunctions
     {
-        class PartialOutboxMessage
+        public class PartialOutboxMessage
         {
             public required OutboxMessageType Type { get; set; }
         }
+
         // Visit https://aka.ms/sqltrigger to learn how to use this trigger binding
         [FunctionName("RelayOutboxMessages")]
         public static void Run(
@@ -25,6 +26,8 @@ namespace Azf.UserService
         {
             // TODO: Must parse the outbox message as queue/topic type or simply separate tables.
             // Or parse the message type based on the PartialOutboxMessage.Type value.
+            // Or just have 2 different types: OutboxQueueMessage and OutboxTopicMessage.
+            // See: https://learn.microsoft.com/en-us/ef/core/modeling/inheritance
             log.LogInformation("SQL Changes: " + JsonConvert.SerializeObject(changes));
 
         }
