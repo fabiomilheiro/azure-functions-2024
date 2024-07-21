@@ -6,28 +6,29 @@ using Microsoft.Extensions.Logging;
 
 namespace Azf.Shared.Messaging;
 
-public interface IOutboxRelayer
+public interface IOutboxRelayer<TOutboxMessage> where TOutboxMessage : OutboxMessageBase
 {
     Task RelayMessageBatchAsync();
 
-    Task RelayMessageBatchAsync(OutboxMessageBase[] outboxMessages);
+    Task RelayMessageBatchAsync(TOutboxMessage[] outboxMessages);
 }
 
-public class OutboxRelayer : IOutboxRelayer
+public class OutboxRelayerBase<TOutboxMessage>: IOutboxRelayer<TOutboxMessage>
+    where TOutboxMessage : OutboxMessageBase
 {
     public const int MaxNumberOfAttempts = 10;
     public const int PageSize = 100;
 
     private readonly SqlDbContext db;
     private readonly IJsonService jsonService;
-    private readonly ILogger<OutboxRelayer> logger;
+    private readonly ILogger<OutboxRelayerBase<TOutboxMessage>> logger;
     private readonly IQueueClient queueClient;
 
-    public OutboxRelayer(
+    public OutboxRelayerBase(
         SqlDbContext db,
         IQueueClient queueClient,
         IJsonService jsonService,
-        ILogger<OutboxRelayer> logger)
+        ILogger<OutboxRelayerBase<TOutboxMessage>> logger)
     {
         this.db = db;
         this.queueClient = queueClient;
@@ -42,9 +43,7 @@ public class OutboxRelayer : IOutboxRelayer
         await this.RelayMessageBatchAsync(outboxMessages);
     }
 
-    // TODO: Separate outbox queue/topic messages by using EF core TPC:
-    // https://learn.microsoft.com/en-us/ef/core/modeling/inheritance
-    public async Task RelayMessageBatchAsync(OutboxMessageBase[] outboxMessages)
+    public async Task RelayMessageBatchAsync(TOutboxMessage[] outboxMessages)
     {
         foreach (var outboxMessage in outboxMessages)
         {
@@ -67,15 +66,7 @@ public class OutboxRelayer : IOutboxRelayer
                             GetMessageType(om)))
                         .ToArray();
 
-                switch (group.Key.Type)
-                {
-                    case OutboxMessageType.Queue:
-                        await this.queueClient.SendAsync(group.Key.TargetName, asyncMessages);
-                        break;
-
-                    default:
-                        throw new NotImplementedException($"Relaying of message type '{group.Key.Type}' not supported yet");
-                }
+                        await this.queueClient.SendAsync(group.Key, asyncMessages);
 
                 await this.RemoveRelayedMessages(inGroup);
             }
@@ -83,8 +74,10 @@ public class OutboxRelayer : IOutboxRelayer
             {
                 this.logger.LogError(
                     exception,
-                    "Could not relay {numberOfMessages} messages to the queue.",
-                    inGroup.Length);
+                    "Could not relay {numberOfMessages} messages to the target {target} (type={type}).",
+                    inGroup.Length,
+                    group.Key,
+                    typeof(TOutboxMessage).Name);
 
                 await this.ProcessFailedAttemptAsync(inGroup);
             }
@@ -103,11 +96,11 @@ public class OutboxRelayer : IOutboxRelayer
         return mapping.MessageType;
     }
 
-    private Task<OutboxMessageBase[]> GetNextBatchAsync()
+    private Task<TOutboxMessage[]> GetNextBatchAsync()
     {
         return this
                .db
-               .OutboxMessages
+               .Set<TOutboxMessage>()
                .Where(m => m.State == OutboxMessageState.Waiting)
                .Take(PageSize)
                .OrderBy(m => m.CreatedAt)

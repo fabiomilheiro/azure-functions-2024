@@ -1,6 +1,4 @@
-﻿using Azf.Shared.Configuration;
-using Microsoft.EntityFrameworkCore.Migrations;
-using System.Diagnostics;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 

@@ -17,8 +17,6 @@ public abstract class OutboxMessageBase : ICreatedAt, IUpdatedAt
 
     public required string MessageId { get; set; }
 
-    //public required OutboxMessageType Type { get; set; }
-
     // Queue or topic name.
     public required string TargetName { get; set; }
 
@@ -40,10 +38,5 @@ public enum OutboxMessageState
     Waiting = 0,
     Processing = 1,
     MaxAttemptsReached = 2,
-}
-
-public enum OutboxMessageType
-{
-    Queue = 0,
-    Topic = 1,
+    Relayed = 3,
 }

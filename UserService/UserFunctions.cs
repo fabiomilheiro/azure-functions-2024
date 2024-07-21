@@ -67,7 +67,7 @@ namespace Azf.UserService
             //}
             //this.db.SaveChanges();
 
-            this.db.AddQueueMessage(
+            this.db.AddOutboxQueueMessage(
                 Shared.Messaging.QueueName.User,
                 new ExampleAsyncMessage
                 {

@@ -1,42 +1,55 @@
 using Azf.Shared.Messaging;
 using Azf.Shared.Sql.Outbox;
-using Azf.UserService.Sql;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Sql;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 
 namespace Azf.UserService
 {
-    public static class OutboxFunctions
+    public class OutboxFunctions
     {
-        public class PartialOutboxMessage
+        private readonly IOutboxRelayer<QueueMessage> queueOutboxRelayer;
+        private readonly IOutboxRelayer<TopicMessage> topicOutboxRelayer;
+
+        public OutboxFunctions(
+            IOutboxRelayer<QueueMessage> queueOutboxRelayer,
+            IOutboxRelayer<TopicMessage> topicOutboxRelayer)
         {
-            public required OutboxMessageType Type { get; set; }
+            this.queueOutboxRelayer = queueOutboxRelayer;
+            this.topicOutboxRelayer = topicOutboxRelayer;
         }
 
         // Visit https://aka.ms/sqltrigger to learn how to use this trigger binding
-        [FunctionName("RelayOutboxMessages")]
-        public static void Run(
-                [SqlTrigger("usersvc.OutboxMessages", "SqlConnectionString")]
-                IReadOnlyList<SqlChange<PartialOutboxMessage>> changes,
-                ILogger log)
+        [FunctionName("RelayOutboxQueueMessages")]
+        public async Task RelayQueueMessages(
+                [SqlTrigger("usersvc.QueueMessages", "SqlConnectionString")]
+                IReadOnlyList<SqlChange<QueueMessage>> changes)
         {
-            // TODO: Must parse the outbox message as queue/topic type or simply separate tables.
-            // Or parse the message type based on the PartialOutboxMessage.Type value.
-            // Or just have 2 different types: OutboxQueueMessage and OutboxTopicMessage.
-            // See: https://learn.microsoft.com/en-us/ef/core/modeling/inheritance
-            log.LogInformation("SQL Changes: " + JsonConvert.SerializeObject(changes));
+            var queueOutboxMessages = changes
+                .Where(c => c.Operation == SqlChangeOperation.Insert)
+                .Select(c => c.Item)
+                .ToArray();
 
+            this.queueOutboxRelayer.RelayMessageBatchAsync(queueOutboxMessages);
         }
-    }
 
-    public class ToDoItem
-    {
-        public string Id { get; set; }
-        public int Priority { get; set; }
-        public string Description { get; set; }
+        // Visit https://aka.ms/sqltrigger to learn how to use this trigger binding
+        [FunctionName("RelayOutboxTopicMessages")]
+        public async Task RelayTopicMessages(
+                [SqlTrigger("usersvc.TopicMessages", "SqlConnectionString")]
+                IReadOnlyList<SqlChange<TopicMessage>> changes)
+        {
+            var topicOutboxMessages = changes
+                .Where(c => c.Operation == SqlChangeOperation.Insert)
+                .Select(c => c.Item)
+                .ToArray();
+
+            await this.topicOutboxRelayer.RelayMessageBatchAsync(topicOutboxMessages);
+        }
     }
 }
