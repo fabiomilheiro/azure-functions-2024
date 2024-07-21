@@ -4,7 +4,6 @@ using Azf.Shared.Sql.ChangeHandling;
 using Azf.Shared.Sql.OnModelCreating;
 using Azf.Shared.Sql.Outbox;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Azf.Shared.Sql
 {
@@ -33,9 +32,9 @@ namespace Azf.Shared.Sql
             this.Deps = deps;
         }
 
-        public DbSet<OutboxMessageBase> OutboxMessages { get; set; }
-
         public DbSet<QueueMessage> QueueMessages { get; set; }
+
+        public DbSet<TopicMessage> TopicMessages { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

@@ -1,7 +1,4 @@
-﻿using Azf.Shared.Sql;
-using Azf.Shared.Types;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Azf.Shared.IoC;
 

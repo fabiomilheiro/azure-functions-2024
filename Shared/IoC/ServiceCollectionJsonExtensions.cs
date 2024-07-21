@@ -1,6 +1,5 @@
 ﻿using Azf.Shared.Configuration;
 using Azf.Shared.Json;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Azf.Shared.IoC;
