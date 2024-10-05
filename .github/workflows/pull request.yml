@@ -18,10 +18,10 @@ jobs:
       - name: test aaaaaaaaaaaaaaaaaaaaa
         working-directory: ./
         run: |
-          echo pwd
-          echo ls
+          echo $(pwd)
+          echo $(ls)
           echo cd ./azf.UserService
-          echo ls
+          echo $(ls)
       - uses: actions/checkout@v4
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
