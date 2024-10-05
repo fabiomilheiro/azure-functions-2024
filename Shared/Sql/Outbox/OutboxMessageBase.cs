@@ -1,10 +1,11 @@
 ﻿using Azf.Shared.Sql.Models;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Azf.Shared.Sql.Outbox;
 
-[EntityTypeConfiguration<OutboxMessageBaseConfiguration, OutboxMessageBase>]
+// [EntityTypeConfiguration<OutboxMessageBaseConfiguration, OutboxMessageBase>]
 public abstract class OutboxMessageBase : ICreatedAt, IUpdatedAt
 {
     [Key]

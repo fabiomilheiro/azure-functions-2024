@@ -4,6 +4,7 @@ using Azf.UserService.Sql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Azf.UserService.Migrations
 {
     [DbContext(typeof(UserSqlDbContext))]
-    partial class UserSqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241005093737_queue_topic_messages_separate")]
+    partial class queue_topic_messages_separate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

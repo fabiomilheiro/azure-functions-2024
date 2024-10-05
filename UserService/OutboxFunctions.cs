@@ -1,3 +1,4 @@
+using Azf.Shared.Configuration;
 using Azf.Shared.Messaging;
 using Azf.Shared.Sql.Outbox;
 using Microsoft.Azure.WebJobs;
@@ -35,7 +36,7 @@ namespace Azf.UserService
                 .Select(c => c.Item)
                 .ToArray();
 
-            this.queueOutboxRelayer.RelayMessageBatchAsync(queueOutboxMessages);
+            await this.queueOutboxRelayer.RelayMessageBatchAsync(queueOutboxMessages);
         }
 
         // Visit https://aka.ms/sqltrigger to learn how to use this trigger binding

@@ -71,7 +71,7 @@ namespace Azf.UserService
                 Shared.Messaging.QueueName.User,
                 new ExampleAsyncMessage
                 {
-                    TestValue = 1000
+                    TestValue = 2000
                 });
             
             await this.db.SaveChangesAsync();
