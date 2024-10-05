@@ -19,8 +19,6 @@ public abstract class OutboxMessageBase : ICreatedAt, IUpdatedAt
 
     public required string MessageId { get; set; }
 
-    public OutboxMessageType Type { get; set; }
-
     // Queue or topic name.
     public required string TargetName { get; set; }
 

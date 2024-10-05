@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace azf.UserService.Migrations
+namespace Azf.UserService.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
@@ -26,7 +26,7 @@ namespace azf.UserService.Migrations
                     TargetName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     State = table.Column<int>(type: "int", nullable: false),
                     NumberOfAttempts = table.Column<int>(type: "int", nullable: false),
-                    Request = table.Column<string>(type: "nvarchar(max)", maxLength: 100000, nullable: false),
+                    Request = table.Column<string>(type: "nvarchar(max)", maxLength: 50000, nullable: false),
                     RequestTypeName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -46,7 +46,7 @@ namespace azf.UserService.Migrations
                     TargetName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     State = table.Column<int>(type: "int", nullable: false),
                     NumberOfAttempts = table.Column<int>(type: "int", nullable: false),
-                    Request = table.Column<string>(type: "nvarchar(max)", maxLength: 100000, nullable: false),
+                    Request = table.Column<string>(type: "nvarchar(max)", maxLength: 50000, nullable: false),
                     RequestTypeName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -69,6 +69,31 @@ namespace azf.UserService.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                 });
+
+            migrationBuilder.Sql(@"
+                IF NOT EXISTS (SELECT 1 FROM sys.change_tracking_databases 
+                               WHERE database_id = DB_ID())
+                BEGIN
+                     ALTER DATABASE CURRENT
+                     SET CHANGE_TRACKING = ON
+                     (CHANGE_RETENTION = 2 DAYS, AUTO_CLEANUP = ON);
+                END
+
+                IF NOT EXISTS (SELECT 1 FROM sys.change_tracking_tables 
+                               WHERE object_id = OBJECT_ID('usersvc.QueueMessages'))
+                BEGIN
+                     ALTER TABLE usersvc.QueueMessages
+                     ENABLE CHANGE_TRACKING
+                     WITH (TRACK_COLUMNS_UPDATED = OFF)
+                END
+
+                IF NOT EXISTS (SELECT 1 FROM sys.change_tracking_tables 
+                               WHERE object_id = OBJECT_ID('usersvc.TopicMessages'))
+                BEGIN
+                     ALTER TABLE usersvc.TopicMessages
+                     ENABLE CHANGE_TRACKING
+                     WITH (TRACK_COLUMNS_UPDATED = OFF)
+                END");
         }
 
         /// <inheritdoc />

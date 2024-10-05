@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace azf.UserService.Migrations
+namespace Azf.UserService.Migrations
 {
     [DbContext(typeof(UserSqlDbContext))]
     partial class UserSqlDbContextModelSnapshot : ModelSnapshot
@@ -60,9 +60,6 @@ namespace azf.UserService.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -104,9 +101,6 @@ namespace azf.UserService.Migrations
                     b.Property<string>("TargetName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
