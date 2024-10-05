@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Azf.UserService.Migrations
+namespace azf.UserService.Migrations
 {
     [DbContext(typeof(UserSqlDbContext))]
-    [Migration("20241005093737_queue_topic_messages_separate")]
-    partial class queue_topic_messages_separate
+    [Migration("20241005165008_test")]
+    partial class test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,7 +48,7 @@ namespace Azf.UserService.Migrations
 
                     b.Property<string>("Request")
                         .IsRequired()
-                        .HasMaxLength(100000)
+                        .HasMaxLength(50000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RequestTypeName")
@@ -62,6 +62,9 @@ namespace Azf.UserService.Migrations
                     b.Property<string>("TargetName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -90,7 +93,7 @@ namespace Azf.UserService.Migrations
 
                     b.Property<string>("Request")
                         .IsRequired()
-                        .HasMaxLength(100000)
+                        .HasMaxLength(50000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RequestTypeName")
@@ -104,6 +107,9 @@ namespace Azf.UserService.Migrations
                     b.Property<string>("TargetName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");

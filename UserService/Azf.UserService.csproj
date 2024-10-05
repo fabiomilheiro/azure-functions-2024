@@ -38,5 +38,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="IoC\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 </Project>

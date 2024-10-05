@@ -5,10 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Azf.Shared.Sql.Outbox;
 
-// [EntityTypeConfiguration<OutboxMessageBaseConfiguration, OutboxMessageBase>]
+[EntityTypeConfiguration<OutboxMessageBaseConfiguration, OutboxMessageBase>]
 public abstract class OutboxMessageBase : ICreatedAt, IUpdatedAt
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid RowId { get; set; }
 
     [ConcurrencyCheck]
@@ -17,6 +18,8 @@ public abstract class OutboxMessageBase : ICreatedAt, IUpdatedAt
     public DateTime UpdatedAt { get; set; }
 
     public required string MessageId { get; set; }
+
+    public OutboxMessageType Type { get; set; }
 
     // Queue or topic name.
     public required string TargetName { get; set; }
@@ -27,11 +30,17 @@ public abstract class OutboxMessageBase : ICreatedAt, IUpdatedAt
     public int NumberOfAttempts { get; set; }
 
     [Required]
-    [StringLength(100000)]
+    [StringLength(50_000)]
     public required string Request { get; set; }
 
     [Required]
     public required string RequestTypeName { get; set; }
+}
+
+public enum OutboxMessageType
+{
+    Queue = 0,
+    Topic = 1,
 }
 
 public enum OutboxMessageState

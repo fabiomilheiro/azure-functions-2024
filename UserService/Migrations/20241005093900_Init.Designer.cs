@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Azf.UserService.Migrations
+namespace azf.UserService.Migrations
 {
     [DbContext(typeof(UserSqlDbContext))]
-    [Migration("20240707224337_ChangeTracking")]
-    partial class ChangeTracking
+    [Migration("20241005093900_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,13 +29,14 @@ namespace Azf.UserService.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Azf.Shared.Sql.Outbox.OutboxMessageBase", b =>
+            modelBuilder.Entity("Azf.Shared.Sql.Outbox.QueueMessage", b =>
                 {
                     b.Property<Guid>("RowId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
+                        .IsConcurrencyToken()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("MessageId")
@@ -47,7 +48,7 @@ namespace Azf.UserService.Migrations
 
                     b.Property<string>("Request")
                         .IsRequired()
-                        .HasMaxLength(200000)
+                        .HasMaxLength(100000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RequestTypeName")
@@ -62,22 +63,54 @@ namespace Azf.UserService.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("UpdatedAt")
-                        .IsConcurrencyToken()
                         .HasColumnType("datetime2");
 
                     b.HasKey("RowId");
 
-                    b.HasIndex("Type");
+                    b.ToTable("QueueMessages", "usersvc");
+                });
 
-                    b.ToTable("OutboxMessages", "usersvc");
+            modelBuilder.Entity("Azf.Shared.Sql.Outbox.TopicMessage", b =>
+                {
+                    b.Property<Guid>("RowId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasDiscriminator<int>("Type");
+                    b.Property<DateTime>("CreatedAt")
+                        .IsConcurrencyToken()
+                        .HasColumnType("datetime2");
 
-                    b.UseTphMappingStrategy();
+                    b.Property<string>("MessageId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NumberOfAttempts")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Request")
+                        .IsRequired()
+                        .HasMaxLength(100000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequestTypeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("State")
+                        .IsConcurrencyToken()
+                        .HasColumnType("int");
+
+                    b.Property<string>("TargetName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("RowId");
+
+                    b.ToTable("TopicMessages", "usersvc");
                 });
 
             modelBuilder.Entity("Azf.UserService.Sql.Models.User", b =>
@@ -101,13 +134,6 @@ namespace Azf.UserService.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users", "usersvc");
-                });
-
-            modelBuilder.Entity("Azf.Shared.Sql.Outbox.QueueMessage", b =>
-                {
-                    b.HasBaseType("Azf.Shared.Sql.Outbox.OutboxMessageBase");
-
-                    b.HasDiscriminator().HasValue(0);
                 });
 #pragma warning restore 612, 618
         }
