@@ -30,6 +30,8 @@ public static class ServiceCollectionSqlExtensions
                     });
         });
 
+        services.AddScoped<SqlDbContext,TDbContext>();
+
         AddOnModelCreatingServices(services);
         AddEntityChangeHandlingServices(services);
 
