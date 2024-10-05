@@ -5,29 +5,30 @@ name: Build
 
 on:
   push:
-    branches: [ ]
+    branches: []
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
     paths: /UserService
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    - name: Go service folder
-      run: cd ./azf.UserService
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-    - name: Publish
-      run: dotnet publish azf.UserService.csproj -c Release -o release
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        working-directory: ./azf.UserService
+        run: dotnet restore
+      - name: Build
+        working-directory: ./azf.UserService
+        run: dotnet build --no-restore
+      - name: Test
+        working-directory: ./azf.UserService
+        run: dotnet test --no-build --verbosity normal
+      - name: Publish
+        working-directory: ./azf.UserService
+        run: dotnet publish azf.UserService.csproj -c Release -o release
