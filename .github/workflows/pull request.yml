@@ -31,7 +31,8 @@ jobs:
         run: dotnet test --no-build --verbosity normal
       - name: Publish
         working-directory: ./azf.UserService
-        run: dotnet publish azf.UserService.csproj -c Release -o release
+        run: pwd
+          dotnet publish azf.UserService.csproj -c Release -o release
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2
         with:
