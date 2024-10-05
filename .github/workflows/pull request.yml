@@ -16,11 +16,12 @@ jobs:
 
     steps:
       - name: test aaaaaaaaaaaaaaaaaaaaa
+        working-directory: ./
         run: |
-          pwd
-          ls
-          cd azf.UserService
-          ls
+          echo pwd
+          echo ls
+          echo cd ./azf.UserService
+          echo ls
       - uses: actions/checkout@v4
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
