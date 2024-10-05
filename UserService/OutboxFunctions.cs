@@ -1,31 +1,56 @@
-//using System.Collections.Generic;
-//using Azf.UserService.Sql;
-//using Microsoft.Azure.WebJobs;
-//using Microsoft.Azure.WebJobs.Extensions.Sql;
+using Azf.Shared.Configuration;
+using Azf.Shared.Messaging;
+using Azf.Shared.Sql.Outbox;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Sql;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-//using Microsoft.Extensions.Logging;
-//using Newtonsoft.Json;
 
+namespace Azf.UserService
+{
+    public class OutboxFunctions
+    {
+        private readonly IOutboxRelayer<QueueMessage> queueOutboxRelayer;
+        private readonly IOutboxRelayer<TopicMessage> topicOutboxRelayer;
 
-//namespace Azf.UserService
-//{
-//    public static class OutboxFunctions
-//    {
-//        // Visit https://aka.ms/sqltrigger to learn how to use this trigger binding
-//        [FunctionName("RelayOutboxMessages")]
-//        public static void Run(
-//                [SqlTrigger($"{UserSqlDbContext.Schema}.OutboxMessage", "SqlConnectionString")] IReadOnlyList<SqlChange<ToDoItem>> changes,
-//                ILogger log)
-//        {
-//            log.LogInformation("SQL Changes: " + JsonConvert.SerializeObject(changes));
+        public OutboxFunctions(
+            IOutboxRelayer<QueueMessage> queueOutboxRelayer,
+            IOutboxRelayer<TopicMessage> topicOutboxRelayer)
+        {
+            this.queueOutboxRelayer = queueOutboxRelayer;
+            this.topicOutboxRelayer = topicOutboxRelayer;
+        }
 
-//        }
-//    }
+        // Visit https://aka.ms/sqltrigger to learn how to use this trigger binding
+        [FunctionName("RelayOutboxQueueMessages")]
+        public async Task RelayQueueMessages(
+                [SqlTrigger("usersvc.QueueMessages", "SqlConnectionString")]
+                IReadOnlyList<SqlChange<QueueMessage>> changes)
+        {
+            var queueOutboxMessages = changes
+                .Where(c => c.Operation == SqlChangeOperation.Insert)
+                .Select(c => c.Item)
+                .ToArray();
 
-//    public class ToDoItem
-//    {
-//        public string Id { get; set; }
-//        public int Priority { get; set; }
-//        public string Description { get; set; }
-//    }
-//}
+            await this.queueOutboxRelayer.RelayMessageBatchAsync(queueOutboxMessages);
+        }
+
+        // Visit https://aka.ms/sqltrigger to learn how to use this trigger binding
+        [FunctionName("RelayOutboxTopicMessages")]
+        public async Task RelayTopicMessages(
+                [SqlTrigger("usersvc.TopicMessages", "SqlConnectionString")]
+                IReadOnlyList<SqlChange<TopicMessage>> changes)
+        {
+            var topicOutboxMessages = changes
+                .Where(c => c.Operation == SqlChangeOperation.Insert)
+                .Select(c => c.Item)
+                .ToArray();
+
+            await this.topicOutboxRelayer.RelayMessageBatchAsync(topicOutboxMessages);
+        }
+    }
+}

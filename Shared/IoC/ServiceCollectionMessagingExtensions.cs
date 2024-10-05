@@ -1,7 +1,7 @@
 ﻿using Azf.Shared.Configuration;
 using Azf.Shared.Messaging;
+using Azf.Shared.Sql.Outbox;
 using Azure.Messaging.ServiceBus;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Azf.Shared.IoC;
@@ -25,7 +25,8 @@ public static class ServiceCollectionMessagingExtensions
         });
 
         services.AddScoped<IQueueClient, QueueClient>();
-        services.AddScoped<IOutboxRelayer, OutboxRelayer>();
+        services.AddScoped<IOutboxRelayer<QueueMessage>, OutboxRelayerBase<QueueMessage>>();
+        services.AddScoped<IOutboxRelayer<TopicMessage>, OutboxRelayerBase<TopicMessage>>();
 
         return services;
     }

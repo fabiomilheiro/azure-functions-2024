@@ -25,7 +25,7 @@ namespace Azf.UserService
                     EnvironmentName = context.EnvironmentName,
                 });
         }
-
+        
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddCommonServices();

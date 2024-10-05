@@ -1,5 +1,7 @@
 using Azf.Shared;
+using Azf.Shared.Sql.Outbox;
 using Azf.UserService.Helpers;
+using Azf.UserService.Messaging;
 using Azf.UserService.Sql;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -51,7 +53,7 @@ namespace Azf.UserService
 
             var result = exampleService.Execute();
 
-            //for (var i = 0; i < 100; i++)
+            //for (var i = 0; i < 3_000; i++)
             //{
             //    var id = Guid.NewGuid();
 
@@ -59,12 +61,22 @@ namespace Azf.UserService
             //    {
             //        CreatedAt = DateTime.Now,
             //        Name = $"User {id}",
-            //        Email= $"user{id}@mailinator.com",
-            //        Id= Guid.NewGuid(),
-            //        UpdatedAt= DateTime.Now,
+            //        Email = $"user{id}@mailinator.com",
+            //        Id = Guid.NewGuid(),
+            //        UpdatedAt = DateTime.Now,
             //    });
             //}
+
             //this.db.SaveChanges();
+
+            this.db.AddOutboxQueueMessage(
+                Shared.Messaging.QueueName.User,
+                new ExampleAsyncMessage
+                {
+                    TestValue = 2000
+                });
+            
+            await this.db.SaveChangesAsync();
 
             var users = await this.db.Users.ToListAsync();
             var names = string.Join(',', users.Select(u => u.Name).ToArray());

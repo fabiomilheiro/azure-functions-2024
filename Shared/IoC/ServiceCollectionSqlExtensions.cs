@@ -4,9 +4,7 @@ using Azf.Shared.Sql.ChangeHandling;
 using Azf.Shared.Sql.OnModelCreating;
 using Azf.Shared.Types;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics;
 
 namespace Azf.Shared.IoC;
 
@@ -31,6 +29,8 @@ public static class ServiceCollectionSqlExtensions
                             null);
                     });
         });
+
+        services.AddScoped<SqlDbContext,TDbContext>();
 
         AddOnModelCreatingServices(services);
         AddEntityChangeHandlingServices(services);
