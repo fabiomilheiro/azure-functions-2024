@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -52,7 +53,7 @@ namespace Azf.UserService
 
             var result = exampleService.Execute();
 
-            //for (var i = 0; i < 100; i++)
+            //for (var i = 0; i < 3_000; i++)
             //{
             //    var id = Guid.NewGuid();
 
@@ -60,11 +61,12 @@ namespace Azf.UserService
             //    {
             //        CreatedAt = DateTime.Now,
             //        Name = $"User {id}",
-            //        Email= $"user{id}@mailinator.com",
-            //        Id= Guid.NewGuid(),
-            //        UpdatedAt= DateTime.Now,
+            //        Email = $"user{id}@mailinator.com",
+            //        Id = Guid.NewGuid(),
+            //        UpdatedAt = DateTime.Now,
             //    });
             //}
+
             //this.db.SaveChanges();
 
             this.db.AddOutboxQueueMessage(
