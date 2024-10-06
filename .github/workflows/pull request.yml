@@ -39,7 +39,7 @@ jobs:
       - name: Publish
         working-directory: ./azf.UserService
         run: |
-          dotnet publish azf.UserService.csproj -c Release -o release
+          dotnet publish Azf.UserService.csproj -c Release -o release
           ls
           cd release
           ls
