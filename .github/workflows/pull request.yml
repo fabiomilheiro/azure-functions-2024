@@ -39,9 +39,8 @@ jobs:
           name: UserService${{github.run_id}}-beta
           path: ./azf.UserService/release
       - name: "Run Azure Functions Action"
-          uses: Azure/functions-action@v1
-          with:
-            app-name: fabio-mvp
-            package: ./azf.UserService/release
-            publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }} # Remove publish-profile to use Azure RBAC
-  
+        uses: Azure/functions-action@v1
+        with:
+          app-name: fabio-mvp
+          package: ./azf.UserService/release
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }} # Remove publish-profile to use Azure RBAC
