@@ -1,0 +1,21 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: Build
+
+on:
+  push:
+    branches: ["main"]
+env:
+  AZURE_FUNCTIONAPP_PUBLISH_PROFILE: ${{secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE}}
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: "Run Azure Functions Action"
+        uses: Azure/functions-action@v1
+        with:
+          app-name: fabio-mvp
+          package: ./azf.UserService/release
+          publish-profile: ${{ env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }} # Remove publish-profile to use Azure RBAC
