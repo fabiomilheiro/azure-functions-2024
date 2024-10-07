@@ -13,7 +13,7 @@ public interface IOutboxRelayer<TOutboxMessage> where TOutboxMessage : OutboxMes
     Task RelayMessageBatchAsync(TOutboxMessage[] outboxMessages);
 }
 
-public class OutboxRelayerBase<TOutboxMessage>: IOutboxRelayer<TOutboxMessage>
+public class OutboxRelayerBase<TOutboxMessage> : IOutboxRelayer<TOutboxMessage>
     where TOutboxMessage : OutboxMessageBase
 {
     public const int MaxNumberOfAttempts = 10;
@@ -63,10 +63,10 @@ public class OutboxRelayerBase<TOutboxMessage>: IOutboxRelayer<TOutboxMessage>
                 var asyncMessages =
                     inGroup
                         .Select(om => (AsyncMessage)this.jsonService.Deserialize(om.Request,
-                            GetMessageType(om)))
+                            GetMessageType(om))!)
                         .ToArray();
 
-                        await this.queueClient.SendAsync(group.Key, asyncMessages);
+                await this.queueClient.SendAsync(group.Key, asyncMessages);
 
                 await this.RemoveRelayedMessages(inGroup);
             }
@@ -83,7 +83,7 @@ public class OutboxRelayerBase<TOutboxMessage>: IOutboxRelayer<TOutboxMessage>
             }
         }
     }
-    
+
 
     private static Type GetMessageType(OutboxMessageBase message)
     {
