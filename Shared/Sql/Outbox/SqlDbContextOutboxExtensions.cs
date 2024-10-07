@@ -24,7 +24,7 @@ public static class SqlDbContextOutboxExtensions
             Request = db.Deps.JsonService.Serialize(message),
             RequestTypeName = message.TypeName,
             State = OutboxMessageState.Waiting,
-            TargetName = queueName.ToString(),
+            TargetName = queueName.ToString().ToLowerInvariant(),
             UpdatedAt = now,
             CreatedAt = now,
         });
@@ -50,7 +50,7 @@ public static class SqlDbContextOutboxExtensions
             Request = db.Deps.JsonService.Serialize(message),
             RequestTypeName = message.TypeName,
             State = OutboxMessageState.Waiting,
-            TargetName = queueName.ToString(),
+            TargetName = queueName.ToString().ToLowerInvariant(),
             UpdatedAt = now,
             CreatedAt = now,
         });

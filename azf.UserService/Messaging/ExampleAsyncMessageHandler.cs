@@ -1,4 +1,6 @@
 ﻿using Azf.Shared.Messaging;
+using System;
+using System.Threading.Tasks;
 
 namespace Azf.UserService.Messaging
 {
@@ -7,7 +9,13 @@ namespace Azf.UserService.Messaging
         public required int TestValue { get; set; }
     }
 
-    public class ExampleAsyncMessageHandler
+    public class ExampleAsyncMessageHandler : AsyncMessageHandlerBase<ExampleAsyncMessage>
     {
+        protected override Task HandleAsync(ExampleAsyncMessage message)
+        {
+            Console.WriteLine($"Value: {message.TestValue}");
+            
+            return Task.CompletedTask;
+        }
     }
 }

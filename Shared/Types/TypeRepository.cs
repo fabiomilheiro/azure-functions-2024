@@ -6,7 +6,7 @@ public static class TypeRepository
         AppDomain
             .CurrentDomain
             .GetAssemblies()
-            .Where(assembly => assembly.FullName!.StartsWith("azf."))
+            .Where(assembly => assembly.FullName!.StartsWith("Azf."))
             .SelectMany(a => a.GetTypes())
             .ToArray();
 
