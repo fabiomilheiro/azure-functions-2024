@@ -13,9 +13,32 @@ jobs:
     runs-on: ubuntu-latest
     environment: dev
     steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        working-directory: ./azf.UserService
+        run: dotnet restore
+      - name: Build
+        working-directory: ./azf.UserService
+        run: dotnet build --no-restore
+      - name: Test
+        working-directory: ./azf.UserService
+        run: dotnet test --no-build --verbosity normal
+      - name: Publish
+        working-directory: ./azf.UserService
+        run: |
+          dotnet publish Azf.UserService.csproj -c Release -o release
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: UserService${{github.run_id}}-beta
+          path: ./azf.UserService/release
       - name: "Run Azure Functions Action"
         uses: Azure/functions-action@v1
         with:
           app-name: fabio-mvp
           package: ./azf.UserService/release
-          publish-profile: ${{ env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }} # Remove publish-profile to use Azure RBAC
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }} # Remove publish-profile to use Azure RBAC
